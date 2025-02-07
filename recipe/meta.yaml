@@ -61,7 +61,8 @@ about:
     new versions of Scipy (from which the ``weave`` submodule may be removed) but
     have existing code that still depends on ``scipy.weave``.  For new code, users
     are recommended to use Cython.
-  dev_url: http://www.github.com/scipy/weave
+  dev_url: https://github.com/scipy/weave
+  doc_source_url: https://github.com/scipy/weave/tree/main/doc
 
 extra:
   recipe-maintainers:
