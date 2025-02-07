@@ -1,6 +1,5 @@
 {% set name = "weave" %}
-{% set version = "0.17.0" %}
-{% set sha256 = "2703f3ae6d23ad47b5f09b6bcb7affd0fb587120a0c973e7be40ef24de709998" %}
+{% set version = "0.51.32" %}
 package:
   name: {{ name|lower }}
   version: {{ version }}
@@ -8,36 +7,48 @@ package:
 source:
   fn: {{ name }}-{{ version }}.tar.gz
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: {{ sha256 }}
-  patches:
-    - python_requires.patch
+  sha256: 1ba34a2ea9743b3611ef7ddb73721e84a31eef43c9d811e81960ca2f4b68d67c
 
 build:
-  number: 4
-  skip: True  # [py3k or not x86_64]
-  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
+  number: 0
+  skip: True  # [py<39]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation
 
 requirements:
   host:
     - python
-    - numpy
+    - hatchling
     - pip
   run:
     - python
-    - numpy
-    - {{ compiler("cxx") }}  # [not win]
+    - pydantic >=2.0.0
+    - wandb >=0.17.1
+    - packaging >=21.0
+    - tenacity >=8.3.0,!=8.4.0
+    - emoji >=2.12.1
+    - uuid-utils >=0.9.0
+    - numpy >1.21.0
+    - rich
+    - gql-with-aiohttp
+    - jsonschema >=4.23.0
+
 
 test:
+  # tests from github require modules we don't have, like 'clickhouse_connect',
+  # so we can't use them yet
   imports:
     - weave
   commands:
-    - python -c "import weave;assert weave.inline('int x=42; return_val=x;') == 42"  # [not win]
+    - pip check
+    - weave --help
+  requires:
+    - pip
 
 about:
   home: https://pypi.python.org/pypi/weave
   license: BSD-3-Clause
   license_family: BSD
-  license_file: LICENSE.txt
+  license_file: LICENSE
   summary: 'Weave: a C++ compiler for Python.'
   description: |
     Weave provides tools for including C/C++ code within Python code. Inlining
