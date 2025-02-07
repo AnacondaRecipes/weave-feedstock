@@ -11,7 +11,9 @@ source:
 
 build:
   number: 0
-  skip: True  # [py<39]
+  skip: true  # [py<39]
+  # we don't have 'wandb' for s390x
+  skip: true  # [s390x]
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation
 
 requirements:
