@@ -1,5 +1,5 @@
 {% set name = "weave" %}
-{% set version = "0.51.31" %}
+{% set version = "0.51.32" %}
 package:
   name: {{ name|lower }}
   version: {{ version }}
@@ -7,7 +7,7 @@ package:
 source:
   fn: {{ name }}-{{ version }}.tar.gz
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 66df71c5865a631986c346d24c7f9b1d22126bd266ad59d1610f26aa7487b025
+  sha256: 1ba34a2ea9743b3611ef7ddb73721e84a31eef43c9d811e81960ca2f4b68d67c
 
 build:
   number: 0
@@ -15,6 +15,8 @@ build:
   # we don't have 'wandb' for s390x
   skip: true  # [s390x]
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation
+  entry_points:
+    - weave = weave.trace.cli:cli
 
 requirements:
   host:
@@ -33,6 +35,14 @@ requirements:
     - rich
     - gql
     - jsonschema >=4.23.0
+  run_constrained:
+    # gql[aiohttp]
+    - aiohttp >=3.8.0,<4  # [py<=311]
+    - aiohttp >=3.9.0,<4  # [py>311]
+    # gql[requests]
+    - requests >=2.26,<3
+    - requests-toolbelt >=1.0.0,<2
+    - urllib3 >=1.26
 
 test:
   # tests from github require modules we don't have, like 'clickhouse_connect',
